@@ -25,9 +25,9 @@ before_install:
    - source ~/travis-perl-helpers/init
    - build-perl
    - perl -V
-   - build-dist
    - apt-get install libwebp-dev
    - gcc --version
+   - build-dist
    - cd $BUILD_DIR             
 
 install:
