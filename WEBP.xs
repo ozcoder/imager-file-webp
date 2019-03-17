@@ -55,32 +55,32 @@ i_writewebp_multi(ig, ...)
           croak("Usage: i_writewebp_multi(ig, images...)");
         img_count = items - 1;
         RETVAL = 1;
-	if (img_count < 1) {
-	  RETVAL = 0;
-	  i_clear_error();
-	  i_push_error(0, "You need to specify images to save");
-	}
-	else {
+        if (img_count < 1) {
+          RETVAL = 0;
+          i_clear_error();
+          i_push_error(0, "You need to specify images to save");
+        }
+        else {
           imgs = mymalloc(sizeof(i_img *) * img_count);
           for (i = 0; i < img_count; ++i) {
-	    SV *sv = ST(1+i);
-	    imgs[i] = NULL;
-	    if (SvROK(sv) && sv_derived_from(sv, "Imager::ImgRaw")) {
-	      imgs[i] = INT2PTR(i_img *, SvIV((SV*)SvRV(sv)));
-	    }
-	    else {
-	      i_clear_error();
-	      i_push_error(0, "Only images can be saved");
-              myfree(imgs);
-	      RETVAL = 0;
-	      break;
+            SV *sv = ST(1+i);
+            imgs[i] = NULL;
+            if (SvROK(sv) && sv_derived_from(sv, "Imager::ImgRaw")) {
+              imgs[i] = INT2PTR(i_img *, SvIV((SV*)SvRV(sv)));
             }
-	  }
-          if (RETVAL) {
-	    RETVAL = i_writewebp_multi(ig, imgs, img_count);
+            else {
+              i_clear_error();
+              i_push_error(0, "Only images can be saved");
+              myfree(imgs);
+              RETVAL = 0;
+              break;
+            }
           }
-	  myfree(imgs);
-	}
+          if (RETVAL) {
+            RETVAL = i_writewebp_multi(ig, imgs, img_count);
+          }
+          myfree(imgs);
+        }
       OUTPUT:
         RETVAL
 
@@ -88,4 +88,4 @@ const char *
 i_webp_libversion()
 
 BOOT:
-	PERL_INITIALIZE_IMAGER_CALLBACKS;
+        PERL_INITIALIZE_IMAGER_CALLBACKS;

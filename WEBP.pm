@@ -12,68 +12,70 @@ BEGIN {
 
 Imager->register_reader
   (
-   type=>'webp',
+   type => 'webp',
    single => 
-   sub { 
-     my ($im, $io, %hsh) = @_;
+    sub { 
+      my ($im, $io, %hsh) = @_;
 
-     my $page = $hsh{page};
-     defined $page or $page = 0;
-     $im->{IMG} = i_readwebp($io, $page);
+      my $page = $hsh{page};
+      defined $page or $page = 0;
+      $im->{IMG} = i_readwebp($io, $page);
 
-     unless ($im->{IMG}) {
-       $im->_set_error(Imager->_error_as_msg);
-       return;
-     }
+      unless ($im->{IMG}) {
+        $im->_set_error(Imager->_error_as_msg);
+        return;
+      }
 
-     return $im;
-   },
+      return $im;
+    },
    multiple =>
-   sub {
-     my ($io, %hsh) = @_;
+    sub {
+      my ($io, %hsh) = @_;
 
-     my @imgs = i_readwebp_multi($io);
-     unless (@imgs) {
-       Imager->_set_error(Imager->_error_as_msg);
-       return;
-     }
+      my @imgs = i_readwebp_multi($io);
+      unless (@imgs) {
+        Imager->_set_error(Imager->_error_as_msg);
+        return;
+      }
 
-     return map bless({ IMG => $_, ERRSTR => undef }, "Imager"), @imgs;
-   },
+      return map bless({ IMG => $_, ERRSTR => undef }, "Imager"), @imgs;
+    },
   );
 
 Imager->register_writer
   (
-   type=>'webp',
+   type => 'webp',
    single => 
-   sub { 
-     my ($im, $io, %hsh) = @_;
+    sub { 
+      my ($im, $io, %hsh) = @_;
 
-     $im->_set_opts(\%hsh, "i_", $im);
-     $im->_set_opts(\%hsh, "webp_", $im);
+      $im->_set_opts(\%hsh, "i_", $im);
+      $im->_set_opts(\%hsh, "webp_", $im);
 
-     unless (i_writewebp($im->{IMG}, $io)) {
-       $im->_set_error(Imager->_error_as_msg);
-       return;
-     }
-     return $im;
-   },
+      unless (i_writewebp($im->{IMG}, $io)) {
+        $im->_set_error(Imager->_error_as_msg);
+        return;
+      }
+      return $im;
+    },
    multiple =>
-   sub {
-     my ($class, $io, $opts, @ims) = @_;
+    sub {
+      my ($class, $io, $opts, @ims) = @_;
 
-     Imager->_set_opts($opts, "webp_", @ims);
+      Imager->_set_opts($opts, "webp_", @ims);
 
-     my @work = map $_->{IMG}, @ims;
-     my $result = i_writewebp_multi($io, @work);
-     unless ($result) {
-       $class->_set_error($class->_error_as_msg);
-       return;
-     }
+      my @work = map $_->{IMG}, @ims;
+      my $result = i_writewebp_multi($io, @work);
+      unless ($result) {
+        $class->_set_error($class->_error_as_msg);
+        return;
+      }
 
-     return 1;
-   },
+      return 1;
+    },
   );
+
+1;
 
 __END__
 

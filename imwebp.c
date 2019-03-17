@@ -52,7 +52,7 @@ find_fourcc(WebPData *d, const char *fourcc, size_t *result_chsize) {
     }
     if (memcmp(p, fourcc, 4) == 0) {
       if (result_chsize)
-	*result_chsize = chsize;
+        *result_chsize = chsize;
       return p;
     }
     p += 8 + chsize;
@@ -100,7 +100,7 @@ get_image(WebPMux *mux, int n, int *error) {
     int width, height;
     int y;
     uint8_t *bmp = WebPDecodeRGBA(f.bitstream.bytes, f.bitstream.size,
-				 &width, &height);
+                                  &width, &height);
     uint8_t *p = bmp;
     if (!bmp) {
       WebPDataClear(&f.bitstream);
@@ -119,7 +119,7 @@ get_image(WebPMux *mux, int n, int *error) {
     int width, height;
     int y;
     uint8_t *bmp = WebPDecodeRGB(f.bitstream.bytes, f.bitstream.size,
-				 &width, &height);
+                                 &width, &height);
     uint8_t *p = bmp;
     if (!bmp) {
       WebPDataClear(&f.bitstream);
@@ -316,8 +316,8 @@ frame_webp(i_img *im, size_t *sz) {
     double quality;
     if (i_tags_get_float(&im->tags, "webp_quality", 0, &quality)) {
       if (quality < 0 || quality > 100) {
-	i_push_error(0, "webp_quality must be in the range 0 to 100 inclusive");
-	return NULL;
+        i_push_error(0, "webp_quality must be in the range 0 to 100 inclusive");
+        return NULL;
       }
     }
     else {
@@ -395,11 +395,11 @@ i_writewebp_multi(io_glue *ig, i_img **imgs, int count) {
     } color;
 
     if (!i_tags_get_int(&imgs[0]->tags, "webp_loop_count", 0,
-			&params.loop_count)) {
+                        &params.loop_count)) {
       params.loop_count = 0;
     }
     if (i_tags_get_color(&imgs[0]->tags, "webp_background", 0,
-			&color.c)) {
+                        &color.c)) {
       params.bgcolor = color.n;
     }
     f.id = WEBP_CHUNK_ANMF;
@@ -408,46 +408,46 @@ i_writewebp_multi(io_glue *ig, i_img **imgs, int count) {
       char buf[80];
 
       if (!i_tags_get_int(&imgs[i]->tags, "webp_left", 0, &f.x_offset))
-	f.x_offset = 0;
+        f.x_offset = 0;
       if (!i_tags_get_int(&imgs[i]->tags, "webp_top", 0, &f.y_offset))
-	f.y_offset = 0;
+        f.y_offset = 0;
       if (!i_tags_get_int(&imgs[i]->tags, "webp_duration", 0, &f.duration))
-	f.duration = 100;
+        f.duration = 100;
       if (i_tags_get_string(&imgs[i]->tags, "webp_dispose", 0, buf, sizeof(buf))) {
-	if (strcmp(buf, "none") == 0) {
-	  f.dispose_method = WEBP_MUX_DISPOSE_NONE;
-	}
-	else if (strcmp(buf, "background") == 0) {
-	  f.dispose_method = WEBP_MUX_DISPOSE_BACKGROUND;
-	}
-	else {
-	  i_push_error(0, "invalid webp_dispose, must be 'none' or 'background'");
-	  goto fail;
-	}
+        if (strcmp(buf, "none") == 0) {
+          f.dispose_method = WEBP_MUX_DISPOSE_NONE;
+        }
+        else if (strcmp(buf, "background") == 0) {
+          f.dispose_method = WEBP_MUX_DISPOSE_BACKGROUND;
+        }
+        else {
+          i_push_error(0, "invalid webp_dispose, must be 'none' or 'background'");
+          goto fail;
+        }
       }
       else {
-	f.dispose_method = WEBP_MUX_DISPOSE_BACKGROUND;
+        f.dispose_method = WEBP_MUX_DISPOSE_BACKGROUND;
       }
       
       if (i_tags_get_string(&imgs[i]->tags, "webp_blend", 0, buf, sizeof(buf))) {
-	if (strcmp(buf, "alpha") == 0) {
-	  f.blend_method = WEBP_MUX_BLEND;
-	}
-	else if (strcmp(buf, "none") == 0) {
-	  f.blend_method = WEBP_MUX_NO_BLEND;
-	}
-	else {
-	  i_push_error(0, "invalid webp_blend, must be 'none' or 'alpha'");
-	  goto fail;
-	}
+        if (strcmp(buf, "alpha") == 0) {
+          f.blend_method = WEBP_MUX_BLEND;
+        }
+        else if (strcmp(buf, "none") == 0) {
+          f.blend_method = WEBP_MUX_NO_BLEND;
+        }
+        else {
+          i_push_error(0, "invalid webp_blend, must be 'none' or 'alpha'");
+          goto fail;
+        }
       }
       else {
-	f.blend_method = WEBP_MUX_BLEND;
+        f.blend_method = WEBP_MUX_BLEND;
       }
       
       f.bitstream.bytes = frame_webp(imgs[i], &f.bitstream.size);
       if (!f.bitstream.bytes)
-	goto fail;
+        goto fail;
 
       WebPMuxPushFrame(mux, &f, 1);
       WebPDataClear(&f.bitstream);
@@ -484,15 +484,15 @@ i_writewebp_multi(io_glue *ig, i_img **imgs, int count) {
 
 char const *
 i_webp_libversion(void) {
-  static char buf[100];
+  static char buf[76];
   if (!*buf) {
     unsigned int mux_ver = WebPGetMuxVersion();
     unsigned int enc_ver = WebPGetEncoderVersion();
     unsigned int dec_ver = WebPGetDecoderVersion();
-    sprintf(buf, "encoder %d.%d.%d (%x) decoder %d.%d.%d (%x) mux %d.%d.%d (%x)",
-	    enc_ver >> 16, (enc_ver >> 8) & 0xFF, enc_ver & 0xFF, enc_ver,
-	    dec_ver >> 16, (dec_ver >> 8) & 0xFF, dec_ver & 0xFF, dec_ver,
-	    mux_ver >> 16, (mux_ver >> 8) & 0xFF, mux_ver & 0xFF, mux_ver);
+    snprintf(buf, 75, "encoder %d.%d.%d (%x) decoder %d.%d.%d (%x) mux %d.%d.%d (%x)",
+            enc_ver >> 16, (enc_ver >> 8) & 0xFF, enc_ver & 0xFF, enc_ver,
+            dec_ver >> 16, (dec_ver >> 8) & 0xFF, dec_ver & 0xFF, dec_ver,
+            mux_ver >> 16, (mux_ver >> 8) & 0xFF, mux_ver & 0xFF, mux_ver);
   }
   return buf;
 }
