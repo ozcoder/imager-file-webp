@@ -26,6 +26,7 @@ before_install:
    - perl -V
    - build-dist
    - apt-get install libwebp-dev
+   - gcc --version
    - cd $BUILD_DIR             
 
 install:
