@@ -27,11 +27,12 @@ before_install:
    - cd v1
    - wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz
    - tar zxf v1.0.0.tar.gz
-   - cd v1.0.0
+   - cd libwebp-1.0.0
    - ./autogen.sh
    - ./configure
    - make
    - make install
+   - cd ../..
    - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
    - source ~/travis-perl-helpers/init
    - build-perl
