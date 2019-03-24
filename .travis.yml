@@ -51,7 +51,7 @@ before_script:
 script:
    - perl Makefile.PL
    - make
-   - prove -lrsv -j$((SYSTEM_CORES + 1)) $(test-dirs) t
+   - prove -lbrsv -j$((SYSTEM_CORES + 1)) t
 
 after_success:
    - coverage-report
