@@ -41,18 +41,7 @@ addons:
       name: "ozcoder/imager-file-webp"
       description: "webp library for Perl"
     notification_email: ozcoder@gmail.com
-    build_command_prepend:
-      - mkdir v1
-      - cd v1
-      - wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz
-      - tar zxf v1.0.0.tar.gz
-      - cd libwebp-1.0.0
-      - ./autogen.sh
-      - ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras
-      - make
-      - sudo make install
-      - cd ../..
-      - perl Makefile.PL
+    build_command_prepend: "mkdir v1 && cd v1 && wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz && tar zxf v1.0.0.tar.gz && cd libwebp-1.0.0 && ./autogen.sh && ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras && make && sudo make install && cd ../.. && perl Makefile.PL"
     build_command: make
     branch_pattern: coverity_scan
 
