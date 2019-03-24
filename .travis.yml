@@ -38,15 +38,15 @@ addons:
     build_command: make
     branch_pattern: coverity_scan
 
-#before_install:
-#   - sudo apt-get update
-#   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-#   - source ~/travis-perl-helpers/init
-#   - build-perl
-#   - perl -V
-#   - gcc --version
-#   - build-dist
-#   - cd $BUILD_DIR             
+before_install:
+   - sudo apt-get update
+   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+   - source ~/travis-perl-helpers/init
+   - build-perl
+   - perl -V
+   - gcc --version
+   - build-dist
+   - cd $BUILD_DIR             
 
 script:
    - perl Makefile.PL
