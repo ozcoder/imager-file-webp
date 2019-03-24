@@ -38,7 +38,7 @@ Imager->register_reader
         return;
       }
 
-      return map bless({ IMG => $_, ERRSTR => undef }, "Imager"), @imgs;
+      return map { bless({ IMG => $_, ERRSTR => undef }, "Imager") } @imgs;
     },
   );
 
@@ -64,7 +64,7 @@ Imager->register_writer
 
       Imager->_set_opts($opts, "webp_", @ims);
 
-      my @work = map $_->{IMG}, @ims;
+      my @work = map { $_->{IMG} } @ims;
       my $result = i_writewebp_multi($io, @work);
       unless ($result) {
         $class->_set_error($class->_error_as_msg);

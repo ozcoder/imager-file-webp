@@ -157,6 +157,8 @@ EOS
       }
     }
   }
+
+  return;
 }
 
 sub indent {
