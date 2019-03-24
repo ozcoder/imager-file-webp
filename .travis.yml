@@ -16,6 +16,24 @@ env:
 
 before_install:
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+  - sudo apt-get update
+  - mkdir v1
+  - cd v1
+  - wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz
+  - tar zxf v1.0.0.tar.gz
+  - cd libwebp-1.0.0
+  - ./autogen.sh
+  - ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras
+  - make
+  - sudo make install
+  - cd ../..
+  - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+  - source ~/travis-perl-helpers/init
+  - build-perl
+  - perl -V
+  - gcc --version
+  - build-dist
+  - cd $BUILD_DIR             
 
 addons:
   coverity_scan:
@@ -38,27 +56,6 @@ addons:
     build_command: make
     branch_pattern: coverity_scan
 
-before_install:
-   - sudo apt-get update
-   - mkdir v1
-   - cd v1
-   - wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz
-   - tar zxf v1.0.0.tar.gz
-   - cd libwebp-1.0.0
-   - ./autogen.sh
-   - ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras
-   - make
-   - sudo make install
-   - cd ../..
-   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-   - source ~/travis-perl-helpers/init
-   - build-perl
-   - perl -V
-   - gcc --version
-   - build-dist
-   - cd $BUILD_DIR             
-
 script:
    - perl Makefile.PL
    - make
-   - prove -lbrv -j$((SYSTEM_CORES + 1)) t
