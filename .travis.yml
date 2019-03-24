@@ -2,54 +2,49 @@ dist: xenial
 sudo: required
 language: perl
 perl:
-    - "blead"
-    - "5.26"
-    - "5.24"
-    - "5.20"
-    - "5.18"
-    - "5.16"
-    - "5.14"
-    - "5.12"
-    - "5.10"
+    - "5.22"
 
-matrix:
-   include:
-      - perl: 5.22
-        env: COVERAGE=1      
-   allow_failures:
-      - perl: "blead"
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "orVAswwg08Hhc54Zz16beIbJ7GVUHQrP3xEWMHh3OG59G6xf+V3fGcltlbiTmjsHWGsnVQ9apBPNyTThISIRfFmuF/wpHSObMq9FdtEPy2N22MDegrPdCU92tjkD5UT8+aC5FuhnmizUZ+TiKWYIHVZP4gRDESmi3Ylcf6S98btcRPBTVNUI1mUqKgLdoSDzKlnhnoR0XxwbfXyNZVSuxyXfZlQBaGKV07KJcf3XvmNHbbz4/waSfG4D2Ybf1LE+yz2+IxKC6EB4nogFYALe2KIJsr6YklAe0Vd3FSTkSm/2P2ApuZOQ/CEnA61GWcHbZMY822+BdKR4j0q739IsjguqDIGO3O9Olic5kVYdR0vFpJDO11JVuaQQg1yWPVym2nNB5RA9LoSQ1E7byqvHZxqzthdhvA9xEBiBrOvbuZA2MXZRy1cdDvMcZRKM2Pq2TDZ5EcliFSo63gDsLqxJXeQ7RJFfxHAzy6yV6tZBhrxvmP1mqspL7I4j78AWzxs6i7anQPkFytSfI19gQ8XwFHbGaO3VHQneQFegYcf52XBd0uQV0efZGj/1JS7kUHfpKujoLsaZo8zR6h7zTV7iUJz21/fOGhfVjE1QF6Iu30QFDjNy5kkipgQDwvRl41LkbAvnjz2oHQrIUjC8tNZFtYYVH3+LbdWyJ4un9D3I5H4="
 
 before_install:
-   - sudo apt-get update
-   - mkdir v1
-   - cd v1
-   - wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz
-   - tar zxf v1.0.0.tar.gz
-   - cd libwebp-1.0.0
-   - ./autogen.sh
-   - ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras
-   - make
-   - sudo make install
-   - cd ../..
-   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
-   - source ~/travis-perl-helpers/init
-   - build-perl
-   - perl -V
-   - gcc --version
-   - build-dist
-   - cd $BUILD_DIR             
+  - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
-install:
-   - cpan-install --deps
-   - cpan-install --coverage
+addons:
+  coverity_scan:
+    project:
+      name: "ozcoder/imager-file-webp"
+      description: "webp library for Perl"
+    notification_email: ozcoder@gmail.com
+    build_command_prepend:
+      - mkdir v1
+      - cd v1
+      - wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz
+      - tar zxf v1.0.0.tar.gz
+      - cd libwebp-1.0.0
+      - ./autogen.sh
+      - ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras
+      - make
+      - sudo make install
+      - cd ../..
+      - perl Makefile.PL
+    build_command: make
+    branch_pattern: coverity_scan
 
-before_script:
-   - coverage-setup
+#before_install:
+#   - sudo apt-get update
+#   - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
+#   - source ~/travis-perl-helpers/init
+#   - build-perl
+#   - perl -V
+#   - gcc --version
+#   - build-dist
+#   - cd $BUILD_DIR             
 
 script:
    - perl Makefile.PL
    - make
    - prove -lbrv -j$((SYSTEM_CORES + 1)) t
-
-after_success:
-   - coverage-report
