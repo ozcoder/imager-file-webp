@@ -1,8 +1,8 @@
 dist: xenial
 sudo: required
-language: perl
-perl:
-    - "5.22"
+#language: perl
+#perl:
+#    - "5.22"
 
 env:
   global:
