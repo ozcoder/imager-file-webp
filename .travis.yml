@@ -40,6 +40,16 @@ addons:
 
 before_install:
    - sudo apt-get update
+   - mkdir v1
+   - cd v1
+   - wget https://github.com/webmproject/libwebp/archive/v1.0.0.tar.gz
+   - tar zxf v1.0.0.tar.gz
+   - cd libwebp-1.0.0
+   - ./autogen.sh
+   - ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras
+   - make
+   - sudo make install
+   - cd ../..
    - git clone git://github.com/travis-perl/helpers ~/travis-perl-helpers
    - source ~/travis-perl-helpers/init
    - build-perl
