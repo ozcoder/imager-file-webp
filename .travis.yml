@@ -29,7 +29,7 @@ before_install:
    - tar zxf v1.0.0.tar.gz
    - cd libwebp-1.0.0
    - ./autogen.sh
-   - ./configure --prefix=/usr
+   - ./configure --prefix=/usr --enable-libwebpmux --enable-libwebpdecoder --enable-libwebpextras
    - make
    - sudo make install
    - cd ../..
