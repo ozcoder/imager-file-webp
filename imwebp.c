@@ -484,12 +484,12 @@ i_writewebp_multi(io_glue *ig, i_img **imgs, int count) {
 
 char const *
 i_webp_libversion(void) {
-  static char buf[76];
+  static char buf[100];
   if (!*buf) {
     unsigned int mux_ver = WebPGetMuxVersion();
     unsigned int enc_ver = WebPGetEncoderVersion();
     unsigned int dec_ver = WebPGetDecoderVersion();
-    snprintf(buf, 75, "encoder %d.%d.%d (%x) decoder %d.%d.%d (%x) mux %d.%d.%d (%x)",
+    snprintf(buf, 99, "encoder %d.%d.%d (%x) decoder %d.%d.%d (%x) mux %d.%d.%d (%x)",
             enc_ver >> 16, (enc_ver >> 8) & 0xFF, enc_ver & 0xFF, enc_ver,
             dec_ver >> 16, (dec_ver >> 8) & 0xFF, dec_ver & 0xFF, dec_ver,
             mux_ver >> 16, (mux_ver >> 8) & 0xFF, mux_ver & 0xFF, mux_ver);
